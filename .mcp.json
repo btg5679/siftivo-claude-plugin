@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "siftivo": {
+      "type": "http",
+      "url": "https://api.siftivo.com/mcp"
+    }
+  }
+}
