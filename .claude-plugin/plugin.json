@@ -1,7 +1,7 @@
 {
   "name": "siftivo",
   "displayName": "Siftivo",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Book picks from your own reading, checked against what you have already read. Log books as you start and finish them.",
   "author": {
     "name": "Siftivo",
@@ -9,6 +9,13 @@
     "url": "https://siftivo.com"
   },
   "homepage": "https://siftivo.com",
+  "privacyPolicyUrl": "https://siftivo.com/privacy",
   "license": "MIT",
-  "keywords": ["books", "reading", "recommendations", "library", "series"]
+  "keywords": [
+    "books",
+    "reading",
+    "recommendations",
+    "library",
+    "series"
+  ]
 }
