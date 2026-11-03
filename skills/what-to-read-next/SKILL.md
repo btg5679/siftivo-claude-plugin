@@ -11,7 +11,8 @@ reader has not read yet.
 
 ## 1. Work out what the reader gave you
 
-- **Books they loved** ("I loved Circe and Piranesi"): go to step 3.
+- **Books they loved** ("I loved Circe and Piranesi"), perhaps with one they
+  did not ("but I couldn't stand The Goldfinch"): go to step 3.
 - **A mood, theme or subject** ("something cozy", "a good book about grief"):
   go to step 4.
 - **Nothing**, just "what should I read next?": go to step 2.
@@ -46,15 +47,17 @@ re-authorization" or "token expired". All of them mean the same thing. The
 catalog tools in steps 3 and 4 still work without an account, so keep going
 with Siftivo. Do not fall back to picks from memory.
 
-Say once, in one sentence, that connecting their Siftivo account lets picks
-come from their own shelves and skip what they have read. Then ask one
+Say once, in one sentence, that connecting their Siftivo account keeps the
+books they name, so picks come from their own shelves and skip what they have
+read, here and in the Siftivo app. Then ask one
 question: two or three books they loved, or the mood they are in. When they
 answer, go to step 3 or 4.
 
 ## 3. From books they loved
 
 Call `recommend_from_titles` with the titles, as `"Title by Author"` when you
-know the author. Up to 10 titles.
+know the author. Up to 10 titles. Books the reader disliked go in `avoid`, up
+to 5. Those books and their authors' other books are left out.
 
 - Anything in `unmatched` is not in the catalog. Tell the reader which titles
   were not found. Do not swap in a guess.
@@ -99,12 +102,21 @@ For each book:
 Do not show `score`, `explanation` or match percentages. Do not read the
 taste profile back to the reader. Keep it short.
 
+A result may carry `next`, short lines about what the reader could do next.
+Pass on at most one of them, once in the conversation, in your own words.
+
 ## 7. Offer to save them
 
-If the account is linked, ask whether they want any of the picks on their
-want-to-read list. Save only the books they choose. For each one, call
-`add_to_library` with the `workId` and `readingStatus: "NOT_STARTED"`, and no
-other field. Then confirm in one line.
+If the account is linked, ask one question: whether they want any of the
+picks on their want-to-read list, and, if they named books they loved or
+disliked, whether to keep those in their taste.
 
-Never save a book the reader did not ask for. If the account is not linked,
-the link on each book is enough.
+- For each pick they choose, call `add_to_library` with the `workId` and
+  `readingStatus: "NOT_STARTED"`, and no other field.
+- For the books they named, call `save_my_taste` once with all of them:
+  `feeling` is `loved` or `disliked`, and `why` is their own reason when they
+  gave one ("the humor and the friendship"). It never changes a book already
+  on their shelves.
+
+Then confirm in one line. Never save a book the reader did not ask for. If
+the account is not linked, the link on each book is enough.

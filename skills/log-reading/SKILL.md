@@ -1,6 +1,6 @@
 ---
 name: log-reading
-description: Log reading on the reader's Siftivo shelves. Use when they say they started, finished or gave up on a book, want to add a book to their to-read list, give a book a star rating, say how far through a book they are, or ask to take a book off their shelves.
+description: Log reading on the reader's Siftivo shelves. Use when they say they started, finished or gave up on a book, want to add a book to their to-read list, give a book a star rating, say how far through a book they are, ask to take a book off their shelves, list books they have read, or name books they loved or disliked.
 ---
 
 # Log reading
@@ -56,9 +56,19 @@ from step 3.
 - Leave out `progress` when they finish or have not started a book. The shelf
   sets it.
 
-For several books at once ("I read these five this year"), find all of them
-first, call `get_my_book` once with every `workId`, then call
-`add_to_library` for each.
+## 4b. Many books, or how they felt about them
+
+For a list of books they have read ("I read these five this year"), or books
+they loved or disliked, call `save_my_taste` once with all of them, up to 25.
+It takes titles, so skip steps 1 and 2.
+
+- `feeling` is `read`, `loved` or `disliked`.
+- `why` is their own reason when they gave one, such as "the humor and the
+  friendship" for "I loved it for the humor and the friendship".
+- It adds books not yet on a shelf to Finished and never changes one already
+  there. If they also gave a book a rating or a shelf, follow with
+  `add_to_library` for that book alone.
+- Tell them which titles came back in `unmatched`.
 
 ## 5. Take a book off
 
@@ -77,9 +87,10 @@ book's `url`. No more than that.
 ## When the account is not linked
 
 The shelf tools need the reader's Siftivo account. An error from
-`get_my_book`, `add_to_library` or `remove_from_library` that reads as a 401,
-"requires authorization", "requires re-authorization" or "token expired"
-means the account is not linked in this app. Say so in one sentence:
-connecting their Siftivo account lets their reading be saved. Do not retry
+`get_my_book`, `add_to_library`, `remove_from_library` or `save_my_taste`
+that reads as a 401, "requires authorization", "requires re-authorization" or
+"token expired" means the account is not linked in this app. Say so in one
+sentence: connecting their Siftivo account saves their reading here and in
+the Siftivo app. Do not retry
 the call, and do not say it was saved. `search_books` and the other catalog
 tools still work without an account.
