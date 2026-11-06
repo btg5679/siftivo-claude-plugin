@@ -1,6 +1,6 @@
 ---
 name: log-reading
-description: Log reading on the reader's Siftivo shelves. Use when they say they started, finished or gave up on a book, want to add a book to their to-read list, give a book a star rating, say how far through a book they are, ask to take a book off their shelves, list books they have read, or name books they loved or disliked.
+description: Log reading on the reader's Siftivo shelves. Use when they say they started, finished or gave up on a book, want to add a book to their to-read list, give a book a star rating, say how far through a book they are, ask to take a book off their shelves, list books they have read, name books they loved or disliked, or want to post, change, read or delete a review.
 ---
 
 # Log reading
@@ -55,6 +55,8 @@ from step 3.
   example when the reader only adds a rating.
 - Leave out `progress` when they finish or have not started a book. The shelf
   sets it.
+- A rating alone on a book not on a shelf saves the rating and shelves nothing.
+  Say so if the reader asks where the book is.
 
 ## 4b. Many books, or how they felt about them
 
@@ -79,7 +81,27 @@ stays. Say that in your reply.
 Moving a book to another shelf is `add_to_library` with a new
 `readingStatus`, not a removal.
 
-## 6. Reply
+## 6. Reviews
+
+A review is public: it goes on the book's page under the reader's name and to
+their followers. `notes` is the private one. Use `write_review` only when the
+reader asks to post a review.
+
+- `reviewText` is the reader's own words. If they ask for help, show them a
+  draft and post only what they approve, word for word.
+- Never add words to reach the 50 character minimum. On `too_short`, ask them
+  for more.
+- `rating` is half stars. On `needs_rating`, ask them for one.
+- On `exists`, show them the review that is already there and ask whether to
+  replace it. Send `replaceExisting: true` only if they say yes.
+- Set `containsSpoilers` when they say it gives away the plot.
+- If `public` comes back false, say the review reaches nobody else.
+
+`get_my_book` returns their review, for "what did I write about X".
+`delete_review` takes one down for good and leaves the rating, so use it only
+when they ask.
+
+## 7. Reply
 
 One line per book: title, its shelf, and its rating if it has one, with the
 book's `url`. No more than that.
@@ -87,8 +109,8 @@ book's `url`. No more than that.
 ## When the account is not linked
 
 The shelf tools need the reader's Siftivo account. An error from
-`get_my_book`, `add_to_library`, `remove_from_library` or `save_my_taste`
-that reads as a 401, "requires authorization", "requires re-authorization" or
+`get_my_book`, `add_to_library`, `remove_from_library`, `save_my_taste`,
+`write_review` or `delete_review` that reads as a 401, "requires authorization", "requires re-authorization" or
 "token expired" means the account is not linked in this app. Say so in one
 sentence: connecting their Siftivo account saves their reading here and in
 the Siftivo app. Do not retry

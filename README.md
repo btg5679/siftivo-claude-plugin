@@ -17,7 +17,8 @@ go on your want-to-read list.
 or "add Babel to my list". The book goes on the right shelf with your rating.
 It changes only what you asked to change, so a note you wrote earlier
 stays as it is. Name a few books you loved, and why, or list what you read
-this year, and they are kept in your taste in one go.
+this year, and they are kept in your taste in one go. Ask it to post a review
+in your words, and it goes on the book's page under your name.
 
 You can also ask what a book is about, what order a series goes in, or what
 everyone is reading this week. None of that needs an account.
@@ -34,7 +35,7 @@ make a free account at [siftivo.com](https://siftivo.com).
 The plugin talks to one server, `https://api.siftivo.com/mcp`, run by
 Siftivo. It sends the book titles, author names and search words in your
 request. With your account connected, it reads your taste and shelves. It
-writes to your shelves and taste only when you ask it to log or save a book. Book links
+writes to your shelves, taste and reviews only when you ask it to. A review is public. Book links
 in the replies go to siftivo.com. The plugin stores nothing itself and runs
 no code on your computer.
 
