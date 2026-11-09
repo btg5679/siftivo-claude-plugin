@@ -1,6 +1,6 @@
 ---
 name: log-reading
-description: Log reading on the reader's Siftivo shelves. Use when they say they started, finished or gave up on a book, want to add a book to their to-read list, give a book a star rating, say how far through a book they are, ask to take a book off their shelves, list books they have read, name books they loved or disliked, or want to post, change, read or delete a review.
+description: Log reading on the reader's Siftivo shelves. Use when they say they started, finished or gave up on a book, want to add a book to their to-read list, give a book a star rating, ask to take a book off their shelves, list books they have read, name books they loved or disliked, want to post, change, read or delete a review, or want to write, read or delete a reading journal entry, such as a day's note, the page they reached, or the time left on an audiobook.
 ---
 
 # Log reading
@@ -23,7 +23,7 @@ Use the `workId` from the result.
 ## 2. See where it stands now
 
 Call `get_my_book` with the `workId`. It returns the current shelf
-(`readingStatus`), `rating` and `progress`, or `onShelf: false`. Use it to
+(`readingStatus`), `rating` and percent read (`progress`), or `onShelf: false`. Use it to
 tell the reader what changed, such as "moved from Reading to Finished".
 
 ## 3. Turn their words into fields
@@ -36,7 +36,7 @@ tell the reader what changed, such as "moved from Reading to Finished".
 | gave up, quit, did not finish | `readingStatus: "DNF"` |
 | four stars, 4.5, three and a half | `rating`, 0.5 to 5 in half steps |
 | a score out of ten, such as 8/10 | `rating` of half that, so 4 |
-| halfway, 30 percent, page 150 of 300 | `progress`, a whole percent |
+| finished it on Sunday, started it last week | `date`, YYYY-MM-DD in their time zone |
 | keep it private, only me | `visibility: "ONLY_ME"` |
 | a note in their own words | `notes`, exactly as they said it |
 
@@ -53,8 +53,8 @@ from step 3.
   wipe what they wrote.
 - Leave out `readingStatus` to keep the book on its current shelf, for
   example when the reader only adds a rating.
-- Leave out `progress` when they finish or have not started a book. The shelf
-  sets it.
+- Where they are in a book (page 150, two hours left) is the journal, not
+  this tool. See step 6.
 - A rating alone on a book not on a shelf saves the rating and shelves nothing.
   Say so if the reader asks where the book is.
 
@@ -81,7 +81,35 @@ stays. Say that in your reply.
 Moving a book to another shelf is `add_to_library` with a new
 `readingStatus`, not a removal.
 
-## 6. Reviews
+## 6. The reading journal
+
+One entry per book per day: a note in their words, where they got to, or
+both. Notes are private. Call `write_journal` with `entries`, one per book,
+and skip steps 1 and 2: it takes titles and matches the books they are
+reading now first.
+
+- `date` is the reader's own today, or the day they name ("yesterday"), as
+  YYYY-MM-DD.
+- Print or ebook: `page`, with `totalPages` if they say how long their copy is.
+- Audio: `minutesLeft`. "Three hours left" is 180. "Four hours in" is
+  `totalMinutes` minus 240, so ask for the runtime if you do not know it.
+- A Kindle percent goes in the note, in their words. There is no percent field.
+- "I'm listening to this one now" with no position is `trackBy: "time"`.
+- On `unit_differs`, the book is tracked the other way. Ask whether to switch,
+  and resend with `switchUnit: true` only if they say yes.
+- A note on a day that already has one is added under it. Send
+  `replaceNote: true` only when they ask to replace what they wrote.
+- On `ambiguous`, ask which of the `candidates` they mean.
+- Finishing a book is `add_to_library` with `readingStatus: "FINISHED"`, not
+  a journal entry.
+
+`get_my_journal` with their `today` reads it back: the books they are
+reading, each with `trackBy`, the last page or `minutesLeft`, and whether
+today is logged. With `book`, it returns that book's days and notes, for
+"where was I in X" and "what did I write about X". `delete_journal_entry`
+deletes one day for one book, so use it only when they ask.
+
+## 7. Reviews
 
 A review is public: it goes on the book's page under the reader's name and to
 their followers. `notes` is the private one. Use `write_review` only when the
@@ -101,7 +129,7 @@ reader asks to post a review.
 `delete_review` takes one down for good and leaves the rating, so use it only
 when they ask.
 
-## 7. Reply
+## 8. Reply
 
 One line per book: title, its shelf, and its rating if it has one, with the
 book's `url`. No more than that.
@@ -110,7 +138,7 @@ book's `url`. No more than that.
 
 The shelf tools need the reader's Siftivo account. An error from
 `get_my_book`, `add_to_library`, `remove_from_library`, `save_my_taste`,
-`write_review` or `delete_review` that reads as a 401, "requires authorization", "requires re-authorization" or
+`write_review`, `delete_review` or the journal tools that reads as a 401, "requires authorization", "requires re-authorization" or
 "token expired" means the account is not linked in this app. Say so in one
 sentence: connecting their Siftivo account saves their reading here and in
 the Siftivo app. Do not retry
