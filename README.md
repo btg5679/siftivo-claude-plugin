@@ -8,10 +8,12 @@ read.
 ## Use it
 
 **What to read next.** Ask "what should I read next?", name books you loved,
-or describe a mood. With your Siftivo account connected, picks start from
-your own taste. Each pick is checked against your shelves first, so a book
-you have already read doesn't come back. Say which ones you want, and they
-go on your want-to-read list.
+or describe a mood. With your Siftivo account connected, a plain "what
+should I read next?" brings your Picks for today, the same books the Siftivo
+app shows you, and other picks start from your own taste. Each pick is
+checked against your shelves first, so a book you have already read doesn't
+come back. Say which ones you want, and they go on your want-to-read list, or
+on your Shortlist if you only might read them.
 
 **Log your reading.** Say "I just finished Piranesi, four and a half stars"
 or "add Babel to my list". The book goes on the right shelf with your rating.

@@ -21,7 +21,19 @@ If they said fiction or nonfiction, pass `isFiction` (true or false) to every
 recommend call. If they named both books and a mood, run steps 3 and 4 and
 merge the results.
 
-## 2. Start from their taste
+## 2. Start from their Picks, then their taste
+
+Call `get_my_picks` with no arguments. It returns the books the Siftivo app
+shows the reader today, each with a `reason` and a `hook` (what the book is
+about).
+
+- **If it returns picks**, they are your picks. Go to step 5, then step 6.
+  Use each pick's `reason` for why it fits and its `hook` for what it is
+  about. The result's `url` opens the same picks in the Siftivo app; mention
+  it once.
+- **If `picks` is empty**, the reader has no loved books saved yet. Go on
+  with `get_my_taste` below.
+- **If it fails**, the account is not linked. Skip to "If it fails" below.
 
 Call `get_my_taste` with no arguments. It returns the strongest 40 entries.
 
@@ -85,7 +97,7 @@ a `rating`, because the reader has already read or rated it. The recommend
 tools already leave out shelved books for a linked reader, so this check
 matters most for the books you added yourself.
 
-If `get_my_taste` already failed, the account is not linked, so skip this
+If `get_my_picks` or `get_my_taste` already failed, the account is not linked, so skip this
 step. If `get_my_book` fails the same way, skip the check and say once that
 the picks were not checked against their shelves.
 
@@ -108,11 +120,15 @@ Pass on at most one of them, once in the conversation, in your own words.
 ## 7. Offer to save them
 
 If the account is linked, ask one question: whether they want any of the
-picks on their want-to-read list, and, if they named books they loved or
-disliked, whether to keep those in their taste.
+picks on their want-to-read list or their Shortlist, and, if they named books
+they loved or disliked, whether to keep those in their taste.
 
-- For each pick they choose, call `add_to_library` with the `workId` and
-  `readingStatus: "NOT_STARTED"`, and no other field.
+- For each pick they want to read, call `add_to_library` with the `workId`
+  and `readingStatus: "NOT_STARTED"`, and no other field.
+- For each pick they only might read ("maybe", "save it for later"), call
+  `save_to_shortlist` with the `workId`. The Shortlist is a separate list of
+  maybes and does not touch their shelves. Pass `notes` only with the
+  reader's own words.
 - For the books they named, call `save_my_taste` once with all of them:
   `feeling` is `loved` or `disliked`, and `why` is their own reason when they
   gave one ("the humor and the friendship"). It never changes a book already
